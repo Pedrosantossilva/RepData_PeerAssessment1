@@ -13,15 +13,16 @@ editor_options:
 
 ### Loading and preprocessing the data
 
-```{r 1, echo=TRUE, message=FALSE, warning=FALSE}
+
+```r
 library(tidyverse)
 data <- read_csv("repdata_data_activity.zip")
 ```
 
 ### What is mean total number of steps taken per day?
 
-```{r 2, echo=TRUE}
 
+```r
 steps_day <- data %>% group_by(date) %>% 
         summarise(total_steps=sum(steps, na.rm = TRUE))
 
@@ -42,14 +43,15 @@ ggplot(steps_day, aes(total_steps)) +
                    color="orange", linetype="dashed", size=1.5) +
         annotate(geom = "text", x = 14000, y = 15, label = median_steps, 
                  size=4, color="orange")
-
 ```
+
+![](PA1_template_files/figure-html/2-1.png)<!-- -->
 
 ### What is the average daily activity pattern?  
 #### Which 5-minute interval, on average across all the days in the dataset, contains the maximum number of steps?
 
-```{r 3, echo=TRUE}
 
+```r
 steps_day2 <- data %>% group_by(interval) %>% 
         summarise(steps=mean(steps, na.rm = TRUE))
 
@@ -61,14 +63,23 @@ ggplot(steps_day2, aes(interval, steps)) + geom_line() +
                  size=4, color="black")
 ```
 
+![](PA1_template_files/figure-html/3-1.png)<!-- -->
+
 ### Imputing missing values results in a aproximation of mean to median 
 
-```{r 4, echo=TRUE}
 
+```r
 #Number of rows with missing values in variable steps
 
 summary(data$steps)["NA's"]
+```
 
+```
+## NA's 
+## 2304
+```
+
+```r
 # Filling in all of the missing values with the mean for that 5-minute interval
 #(new dataset created)
 
@@ -96,8 +107,11 @@ ggplot(steps_day3, aes(total_steps)) +
                  size=4, color="red") +
         annotate(geom = "text", x = 15000, y = 24, label = mean_steps2, 
                  size=4, color="red")
-        
+```
 
+![](PA1_template_files/figure-html/4-1.png)<!-- -->
+
+```r
 #Histogram comparing median without and with filling missing values, now mean and have the same value (normal distribution)
 
 median_steps2 <- paste("Median (NA filled) =", 
@@ -120,10 +134,12 @@ ggplot(steps_day3, aes(total_steps)) +
                  size=4, color="red")
 ```
 
+![](PA1_template_files/figure-html/4-2.png)<!-- -->
+
 ### Are there differences in activity patterns between weekdays and weekends?
 
-```{r 5, echo=TRUE}
 
+```r
 #Add new variable - weekday, then recode to "weekday" or "weekend" 
 #Note: weekdays in portuguese
 
@@ -140,3 +156,6 @@ steps_day4 <- data3 %>% group_by(interval, weekday2) %>%
 ggplot(steps_day4, aes(interval, steps)) + geom_line() + 
         facet_grid(weekday2~.)+ labs(title=
         "Time series plot of daily activity pattern - Weekday vs Weekend")
+```
+
+![](PA1_template_files/figure-html/5-1.png)<!-- -->
